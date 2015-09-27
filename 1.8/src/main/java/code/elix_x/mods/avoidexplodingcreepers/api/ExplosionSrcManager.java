@@ -7,38 +7,33 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityCreature;
-import net.minecraft.entity.ai.RandomPositionGenerator;
-import net.minecraft.entity.item.EntityTNTPrimed;
-import net.minecraft.entity.monster.EntityCreeper;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.pathfinding.PathNavigate;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.Vec3;
-import net.minecraft.world.World;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import code.elix_x.mods.avoidexplodingcreepers.api.events.GetExplosionSourceFromEntityEvent;
 import code.elix_x.mods.avoidexplodingcreepers.api.events.RerouteUnformalEntityEvent;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.ObfuscationReflectionHelper;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.Phase;
-import cpw.mods.fml.common.gameevent.TickEvent.ServerTickEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.WorldTickEvent;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.ai.RandomPositionGenerator;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.pathfinding.PathNavigate;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.Vec3;
+import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 
 public class ExplosionSrcManager {
 
@@ -145,7 +140,7 @@ public class ExplosionSrcManager {
 		if(source.isValid()){
 			if(source.doDefaultUpdate()){
 				if(source.isExploding()){
-					AxisAlignedBB range = AxisAlignedBB.getBoundingBox(source.getXPos() - source.getRange() * 1.5, source.getYPos() - source.getRange() * 1.5, source.getZPos() - source.getRange() * 1.5, source.getXPos() + source.getRange() * 1.5, source.getYPos() + source.getRange() * 1.5, source.getZPos() + source.getRange() * 1.5);
+					AxisAlignedBB range = new AxisAlignedBB(source.getXPos() - source.getRange() * 1.5, source.getYPos() - source.getRange() * 1.5, source.getZPos() - source.getRange() * 1.5, source.getXPos() + source.getRange() * 1.5, source.getYPos() + source.getRange() * 1.5, source.getZPos() + source.getRange() * 1.5);
 					List<Entity> all = source.getWorldObj().getEntitiesWithinAABBExcludingEntity(source.getHandledEntity(), range);
 					List<Entity> not = sourceEntitiesMap.get(source);
 					if(not == null){
@@ -173,23 +168,21 @@ public class ExplosionSrcManager {
 			Vec3 vec3;
 			if(smartMobs){
 				double ddd = 2.5;
-				AxisAlignedBB range = AxisAlignedBB.getBoundingBox(source.getXPos() - source.getRange() * 1.5 - ddd, source.getYPos() - source.getRange() * 1.5 - ddd, source.getZPos() - source.getRange() * 1.5 - ddd, source.getXPos() + source.getRange() * 1.5 + ddd, source.getYPos() + source.getRange() * 1.5 + ddd, source.getZPos() + source.getRange() * 1.5 + ddd);
-				Vec3 vec = Vec3.createVectorHelper(e.posX - source.getXPos(), e.posY - source.getYPos(), e.posZ - source.getZPos()).normalize();
-				Vec3 out = Vec3.createVectorHelper(source.getXPos(), source.getYPos(), source.getZPos());
+				AxisAlignedBB range = new AxisAlignedBB(source.getXPos() - source.getRange() * 1.5 - ddd, source.getYPos() - source.getRange() * 1.5 - ddd, source.getZPos() - source.getRange() * 1.5 - ddd, source.getXPos() + source.getRange() * 1.5 + ddd, source.getYPos() + source.getRange() * 1.5 + ddd, source.getZPos() + source.getRange() * 1.5 + ddd);
+				Vec3 vec = new Vec3(e.posX - source.getXPos(), e.posY - source.getYPos(), e.posZ - source.getZPos()).normalize();
+				Vec3 out = new Vec3(source.getXPos(), source.getYPos(), source.getZPos());
 				while(range.isVecInside(out)){
-					out.xCoord += vec.xCoord;
-					out.yCoord += vec.yCoord;
-					out.zCoord += vec.zCoord;
+					out = out.add(vec);
 				}
 				double x = out.xCoord;
 				double y = out.yCoord;
 				double z = out.zCoord;
-				if(source.getWorldObj().getBlock((int) x, (int) y, (int) z) != Blocks.air){
-					y = source.getWorldObj().getHeightValue((int) x, (int) z);
+				if(source.getWorldObj().getBlockState(new BlockPos(out)) != Blocks.air.getDefaultState()){
+					y = source.getWorldObj().getHorizon(new BlockPos(out)).getY();
 				}
-				vec3 = Vec3.createVectorHelper(x, y, z);
+				vec3 = new Vec3(x, y, z);
 			} else {
-				vec3 = RandomPositionGenerator.findRandomTargetBlockAwayFrom(entity, (int) (source.getRange() * 5), (int) (source.getRange() * 1.5), Vec3.createVectorHelper(source.getXPos(), source.getYPos(), source.getZPos()));
+				vec3 = RandomPositionGenerator.findRandomTargetBlockAwayFrom(entity, (int) (source.getRange() * 5), (int) (source.getRange() * 1.5), new Vec3(source.getXPos(), source.getYPos(), source.getZPos()));
 			}
 			double eb = entity.getDistanceSq(vec3.xCoord, vec3.yCoord, vec3.zCoord);
 			double speed = eb / (source.getTimeBeforeExplosion() / 2.5);

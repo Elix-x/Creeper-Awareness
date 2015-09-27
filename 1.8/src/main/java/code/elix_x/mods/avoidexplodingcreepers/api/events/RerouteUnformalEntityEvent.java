@@ -1,11 +1,11 @@
 package code.elix_x.mods.avoidexplodingcreepers.api.events;
 
 import code.elix_x.mods.avoidexplodingcreepers.api.IExplosionSource;
-import cpw.mods.fml.common.eventhandler.Cancelable;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityEvent;
+import net.minecraftforge.fml.common.eventhandler.Cancelable;
 
 /**
  * This event is allows you to reroute manually entities that aren't {@link EntityCreature} from given {@link IExplosionSource}.

@@ -18,7 +18,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
 
-@Mod(modid = "avoidexplodingcreepers", version = "2.0", name = "Avoid Exploding Creepers"/*, dependencies = "required-after:excore"*/, acceptableRemoteVersions = "*")
+@Mod(modid = "avoidexplodingcreepers", version = "2.0", name = "Avoid Exploding Creepers"/*, dependencies = "required-after:excore"*/, acceptableRemoteVersions = "*", acceptedMinecraftVersions = "1.8")
 public class AvoidExplodingCreepersBase {
 
 	public static final String MODID = "avoidexplodingcreepers";
@@ -31,7 +31,7 @@ public class AvoidExplodingCreepersBase {
 	public static Configuration config;
 	
 	@EventHandler
-	public void preinit(FMLPreInitializationEvent event)
+	public void preInit(FMLPreInitializationEvent event)
 	{
 		ExplosionSrcManager.preInit(event);
 		
@@ -60,9 +60,14 @@ public class AvoidExplodingCreepersBase {
 	}
 
 	@EventHandler
-	public void postinit(FMLPostInitializationEvent event)
+	public void postInit(FMLPostInitializationEvent event)
 	{
 		ExplosionSrcManager.postInit(event);
+	}
+	
+	@EventHandler
+	public void serverStopped(FMLServerStoppedEvent event){
+		ExplosionSrcManager.serverStopped(event);
 	}
 	
 }

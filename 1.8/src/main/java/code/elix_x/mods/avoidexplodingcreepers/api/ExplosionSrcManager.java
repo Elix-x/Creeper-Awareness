@@ -60,7 +60,7 @@ public class ExplosionSrcManager {
 
 	public static void init(FMLInitializationEvent event)
 	{
-		FMLCommonHandler.instance().bus().register(new OnWorldTickEvent());
+		FMLCommonHandler.instance().bus().register(new TickEvent());
 	}
 
 	public static void postInit(FMLPostInitializationEvent event)
@@ -68,9 +68,15 @@ public class ExplosionSrcManager {
 
 	}
 
-	public static class OnWorldTickEvent {
+	public static void serverStopped(FMLServerStoppedEvent event){
+		entitySourceMap.clear();
+		specialSources.clear();
+		sourceEntitiesMap.clear();
+	}
+	
+	public static class TickEvent {
 
-		public OnWorldTickEvent() {
+		public TickEvent() {
 
 		}
 
@@ -84,7 +90,7 @@ public class ExplosionSrcManager {
 		@SubscribeEvent
 		public void onTickServer(ServerTickEvent event){
 			if(event.phase == Phase.START){
-				tickServer();
+				tick();
 			}
 		}
 
@@ -93,7 +99,7 @@ public class ExplosionSrcManager {
 	private static Map<Entity, IExplosionSource> entitySourceMap = new HashMap<Entity, IExplosionSource>();
 	private static List<IExplosionSource> specialSources = new ArrayList<IExplosionSource>();
 
-	private static void tickServer(){
+	private static void tick(){
 		Iterator<IExplosionSource> it = entitySourceMap.values().iterator();
 		while(it.hasNext()){
 			if(!it.next().isValid()){

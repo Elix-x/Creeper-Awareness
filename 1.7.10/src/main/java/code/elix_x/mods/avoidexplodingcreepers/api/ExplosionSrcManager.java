@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.Entity.EnumEntitySize;
 import net.minecraft.entity.ai.RandomPositionGenerator;
 import net.minecraft.entity.item.EntityTNTPrimed;
 import net.minecraft.entity.monster.EntityCreeper;
@@ -35,6 +36,7 @@ import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStoppedEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.Phase;
 import cpw.mods.fml.common.gameevent.TickEvent.ServerTickEvent;
@@ -65,7 +67,7 @@ public class ExplosionSrcManager {
 
 	public static void init(FMLInitializationEvent event)
 	{
-		FMLCommonHandler.instance().bus().register(new OnWorldTickEvent());
+		FMLCommonHandler.instance().bus().register(new TickEvent());
 	}
 
 	public static void postInit(FMLPostInitializationEvent event)
@@ -73,9 +75,15 @@ public class ExplosionSrcManager {
 
 	}
 
-	public static class OnWorldTickEvent {
+	public static void serverStopped(FMLServerStoppedEvent event){
+		entitySourceMap.clear();
+		specialSources.clear();
+		sourceEntitiesMap.clear();
+	}
 
-		public OnWorldTickEvent() {
+	public static class TickEvent {
+
+		public TickEvent() {
 
 		}
 
@@ -85,11 +93,11 @@ public class ExplosionSrcManager {
 				tick(event.world);
 			}
 		}
-		
+
 		@SubscribeEvent
 		public void onTickServer(ServerTickEvent event){
 			if(event.phase == Phase.START){
-				tickServer();
+				tick();
 			}
 		}
 
@@ -98,7 +106,7 @@ public class ExplosionSrcManager {
 	private static Map<Entity, IExplosionSource> entitySourceMap = new HashMap<Entity, IExplosionSource>();
 	private static List<IExplosionSource> specialSources = new ArrayList<IExplosionSource>();
 
-	private static void tickServer(){
+	private static void tick(){
 		Iterator<IExplosionSource> it = entitySourceMap.values().iterator();
 		while(it.hasNext()){
 			if(!it.next().isValid()){
@@ -115,7 +123,7 @@ public class ExplosionSrcManager {
 			processSource(source);
 		}
 	}
-	
+
 	private static void tick(World world){
 		for(Object o : world.loadedEntityList){
 			Entity entity = (Entity) o;

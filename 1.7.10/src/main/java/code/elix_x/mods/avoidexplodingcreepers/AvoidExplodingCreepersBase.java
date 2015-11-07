@@ -6,6 +6,7 @@ import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import code.elix_x.excore.EXCore;
 import code.elix_x.mods.avoidexplodingcreepers.api.ExplosionSrcManager;
 import code.elix_x.mods.avoidexplodingcreepers.events.BindCreeperEvent;
 import code.elix_x.mods.avoidexplodingcreepers.events.BindTntEvent;
@@ -14,11 +15,11 @@ import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStoppedEvent;
+import cpw.mods.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 
-@Mod(modid = "avoidexplodingcreepers", version = "2.0", name = "Avoid Exploding Creepers"/*, dependencies = "required-after:excore"*/, acceptableRemoteVersions = "*", acceptedMinecraftVersions = "1.7.10")
+@Mod(modid = AvoidExplodingCreepersBase.MODID, name = AvoidExplodingCreepersBase.NAME, version = AvoidExplodingCreepersBase.VERSION, dependencies = "required-after:" + EXCore.DEPENDENCY, acceptableRemoteVersions = "*", acceptedMinecraftVersions = "1.7.10")
 public class AvoidExplodingCreepersBase {
 
 	public static final String MODID = "avoidexplodingcreepers";
@@ -66,7 +67,7 @@ public class AvoidExplodingCreepersBase {
 	}
 	
 	@EventHandler
-	public void serverStopped(FMLServerStoppedEvent event){
+	public void serverStopped(FMLServerStoppingEvent event){
 		ExplosionSrcManager.serverStopped(event);
 	}
 	

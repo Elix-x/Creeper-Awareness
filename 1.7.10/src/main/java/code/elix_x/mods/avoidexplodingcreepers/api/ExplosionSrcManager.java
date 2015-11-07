@@ -7,40 +7,35 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+
+import code.elix_x.mods.avoidexplodingcreepers.api.events.GetExplosionSourceFromEntityEvent;
+import code.elix_x.mods.avoidexplodingcreepers.api.events.RerouteUnformalEntityEvent;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.event.FMLInitializationEvent;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
+import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStoppingEvent;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.Phase;
+import cpw.mods.fml.common.gameevent.TickEvent.ServerTickEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.WorldTickEvent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
-import net.minecraft.entity.Entity.EnumEntitySize;
 import net.minecraft.entity.ai.RandomPositionGenerator;
-import net.minecraft.entity.item.EntityTNTPrimed;
-import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import code.elix_x.mods.avoidexplodingcreepers.api.events.GetExplosionSourceFromEntityEvent;
-import code.elix_x.mods.avoidexplodingcreepers.api.events.RerouteUnformalEntityEvent;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.ObfuscationReflectionHelper;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStoppedEvent;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.Phase;
-import cpw.mods.fml.common.gameevent.TickEvent.ServerTickEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.WorldTickEvent;
 
 public class ExplosionSrcManager {
 
@@ -75,7 +70,7 @@ public class ExplosionSrcManager {
 
 	}
 
-	public static void serverStopped(FMLServerStoppedEvent event){
+	public static void serverStopped(FMLServerStoppingEvent event){
 		entitySourceMap.clear();
 		specialSources.clear();
 		sourceEntitiesMap.clear();
@@ -109,14 +104,18 @@ public class ExplosionSrcManager {
 	private static void tick(){
 		Iterator<IExplosionSource> it = entitySourceMap.values().iterator();
 		while(it.hasNext()){
-			if(!it.next().isValid()){
+			IExplosionSource source = it.next();
+			if(!source.isValid()){
 				it.remove();
+				sourceEntitiesMap.removeAll(source);
 			}
 		}
 		it = specialSources.iterator();
 		while(it.hasNext()){
-			if(!it.next().isValid()){
+			IExplosionSource source = it.next();
+			if(!source.isValid()){
 				it.remove();
+				sourceEntitiesMap.removeAll(source);
 			}
 		}
 		for(IExplosionSource source : specialSources){
@@ -147,7 +146,7 @@ public class ExplosionSrcManager {
 		}
 	}
 
-	private static Map<IExplosionSource, List<Entity>> sourceEntitiesMap = new HashMap<IExplosionSource, List<Entity>>();
+	private static Multimap<IExplosionSource, Entity> sourceEntitiesMap = HashMultimap.create();
 
 	private static void processSource(IExplosionSource source) {
 		if(source.isValid()){
@@ -155,17 +154,12 @@ public class ExplosionSrcManager {
 				if(source.isExploding()){
 					AxisAlignedBB range = AxisAlignedBB.getBoundingBox(source.getXPos() - source.getRange() * 1.5, source.getYPos() - source.getRange() * 1.5, source.getZPos() - source.getRange() * 1.5, source.getXPos() + source.getRange() * 1.5, source.getYPos() + source.getRange() * 1.5, source.getZPos() + source.getRange() * 1.5);
 					List<Entity> all = source.getWorldObj().getEntitiesWithinAABBExcludingEntity(source.getHandledEntity(), range);
-					List<Entity> not = sourceEntitiesMap.get(source);
-					if(not == null){
-						not = new ArrayList<Entity>();
-					}
 					for(Entity entity : all){
-						if(!not.contains(entity)){
-							not.add(entity);
+						if(!sourceEntitiesMap.containsEntry(source, entity)){
+							sourceEntitiesMap.put(source, entity);
 							processEntity(source, entity);
 						}
 					}
-					sourceEntitiesMap.put(source, not);
 				}
 			} else {
 				source.update();

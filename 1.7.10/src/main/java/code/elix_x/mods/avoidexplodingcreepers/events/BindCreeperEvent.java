@@ -6,7 +6,6 @@ import cpw.mods.fml.common.ObfuscationReflectionHelper;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.EntityCreeper;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
 public class BindCreeperEvent {
@@ -17,17 +16,9 @@ public class BindCreeperEvent {
 
 	@SubscribeEvent
 	public void bind(GetExplosionSourceFromEntityEvent event){
-		if(event.entity instanceof EntityCreeper && event.explosionSource == null){
+		if(event.entity instanceof EntityCreeper && ((EntityCreeper) event.entity).getCreeperState() == 1 && event.explosionSource == null){
 			final EntityCreeper creeper = (EntityCreeper) event.entity;
 			event.explosionSource = new IExplosionSource() {
-
-				private final NBTTagCompound nbt = getNbt();
-
-				private NBTTagCompound getNbt() {
-					NBTTagCompound nbt = new NBTTagCompound();
-					creeper.writeEntityToNBT(nbt);
-					return nbt;
-				}
 
 				@Override
 				public Entity getHandledEntity() {
@@ -61,12 +52,12 @@ public class BindCreeperEvent {
 
 				@Override
 				public int getTimeBeforeExplosion() {
-					return nbt.getShort("Fuse") - (Integer) ObfuscationReflectionHelper.getPrivateValue(EntityCreeper.class, creeper, "timeSinceIgnited");
+					return (Integer) ObfuscationReflectionHelper.getPrivateValue(EntityCreeper.class, creeper, "fuseTime", "field_82225_f") - (Integer) ObfuscationReflectionHelper.getPrivateValue(EntityCreeper.class, creeper, "timeSinceIgnited", "field_70833_d");
 				}
 
 				@Override
 				public double getRange() {
-					return nbt.getInteger("ExplosionRadius") * (nbt.hasKey("powered") && nbt.getBoolean("powered") ? 2 : 1);
+					return (Integer) ObfuscationReflectionHelper.getPrivateValue(EntityCreeper.class, creeper, "explosionRadius", "field_82226_g") * (creeper.getPowered() ? 2 : 1);
 				}
 
 				@Override
@@ -83,6 +74,7 @@ public class BindCreeperEvent {
 				public boolean isValid() {
 					return creeper != null && !creeper.isDead;
 				}
+				
 			};
 		}
 	}

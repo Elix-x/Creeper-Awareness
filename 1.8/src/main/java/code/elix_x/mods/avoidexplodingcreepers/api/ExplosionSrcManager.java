@@ -11,6 +11,9 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+
 import code.elix_x.mods.avoidexplodingcreepers.api.events.GetExplosionSourceFromEntityEvent;
 import code.elix_x.mods.avoidexplodingcreepers.api.events.RerouteUnformalEntityEvent;
 import net.minecraft.entity.Entity;
@@ -29,7 +32,7 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStoppedEvent;
+import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
@@ -68,7 +71,7 @@ public class ExplosionSrcManager {
 
 	}
 
-	public static void serverStopped(FMLServerStoppedEvent event){
+	public static void serverStopped(FMLServerStoppingEvent event){
 		entitySourceMap.clear();
 		specialSources.clear();
 		sourceEntitiesMap.clear();
@@ -102,14 +105,18 @@ public class ExplosionSrcManager {
 	private static void tick(){
 		Iterator<IExplosionSource> it = entitySourceMap.values().iterator();
 		while(it.hasNext()){
-			if(!it.next().isValid()){
+			IExplosionSource source = it.next();
+			if(!source.isValid()){
 				it.remove();
+				sourceEntitiesMap.removeAll(source);
 			}
 		}
 		it = specialSources.iterator();
 		while(it.hasNext()){
-			if(!it.next().isValid()){
+			IExplosionSource source = it.next();
+			if(!source.isValid()){
 				it.remove();
+				sourceEntitiesMap.removeAll(source);
 			}
 		}
 		for(IExplosionSource source : specialSources){
@@ -140,7 +147,7 @@ public class ExplosionSrcManager {
 		}
 	}
 
-	private static Map<IExplosionSource, List<Entity>> sourceEntitiesMap = new HashMap<IExplosionSource, List<Entity>>();
+	private static Multimap<IExplosionSource, Entity> sourceEntitiesMap = HashMultimap.create();
 
 	private static void processSource(IExplosionSource source) {
 		if(source.isValid()){
@@ -148,17 +155,12 @@ public class ExplosionSrcManager {
 				if(source.isExploding()){
 					AxisAlignedBB range = new AxisAlignedBB(source.getXPos() - source.getRange() * 1.5, source.getYPos() - source.getRange() * 1.5, source.getZPos() - source.getRange() * 1.5, source.getXPos() + source.getRange() * 1.5, source.getYPos() + source.getRange() * 1.5, source.getZPos() + source.getRange() * 1.5);
 					List<Entity> all = source.getWorldObj().getEntitiesWithinAABBExcludingEntity(source.getHandledEntity(), range);
-					List<Entity> not = sourceEntitiesMap.get(source);
-					if(not == null){
-						not = new ArrayList<Entity>();
-					}
 					for(Entity entity : all){
-						if(!not.contains(entity)){
-							not.add(entity);
+						if(!sourceEntitiesMap.containsEntry(source, entity)){
+							sourceEntitiesMap.put(source, entity);
 							processEntity(source, entity);
 						}
 					}
-					sourceEntitiesMap.put(source, not);
 				}
 			} else {
 				source.update();

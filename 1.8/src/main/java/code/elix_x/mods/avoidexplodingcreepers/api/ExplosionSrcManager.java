@@ -37,19 +37,22 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
+import net.minecraftforge.fml.relauncher.Side;
 
 public class ExplosionSrcManager {
 
 	public static final Logger logger = LogManager.getLogger("AEC Explosions Mananger");
 
+	public static File configFolder;
 	public static File configFile;
 	public static Configuration config;
 
 	public static boolean smartMobs = true;
 
-	public static void preInit(FMLPreInitializationEvent event)
-	{
-		configFile = new File(event.getModConfigurationDirectory(), "AvoidExplodingCreepers/API.cfg");
+	public static void preInit(FMLPreInitializationEvent event) {
+		configFolder = new File(event.getModConfigurationDirectory(), "Avoid Exploding Creepers");
+		configFolder.mkdir();
+		configFile = new File(configFolder, "API.cfg");
 		try {
 			configFile.createNewFile();
 		} catch (IOException e) {
@@ -61,17 +64,15 @@ public class ExplosionSrcManager {
 		config.save();
 	}
 
-	public static void init(FMLInitializationEvent event)
-	{
+	public static void init(FMLInitializationEvent event) {
 		FMLCommonHandler.instance().bus().register(new TickEvent());
 	}
 
-	public static void postInit(FMLPostInitializationEvent event)
-	{
+	public static void postInit(FMLPostInitializationEvent event) {
 
 	}
 
-	public static void serverStopped(FMLServerStoppingEvent event){
+	public static void serverStopping(FMLServerStoppingEvent event) {
 		entitySourceMap.clear();
 		specialSources.clear();
 		sourceEntitiesMap.clear();
@@ -85,7 +86,7 @@ public class ExplosionSrcManager {
 
 		@SubscribeEvent
 		public void onTickWorld(WorldTickEvent event){
-			if(event.phase == Phase.START){
+			if(event.side == Side.SERVER && event.phase == Phase.START){
 				tick(event.world);
 			}
 		}

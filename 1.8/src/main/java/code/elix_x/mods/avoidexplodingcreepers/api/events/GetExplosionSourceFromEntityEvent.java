@@ -17,7 +17,7 @@ import net.minecraftforge.fml.common.eventhandler.Cancelable;
  * @author elix_x
  *
  */
-public class GetExplosionSourceFromEntityEvent extends EntityEvent{
+public class GetExplosionSourceFromEntityEvent extends EntityEvent {
 
 	public IExplosionSource explosionSource;
 	

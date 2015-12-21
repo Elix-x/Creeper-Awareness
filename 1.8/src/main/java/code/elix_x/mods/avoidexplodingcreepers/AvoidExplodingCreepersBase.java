@@ -32,11 +32,10 @@ public class AvoidExplodingCreepersBase {
 	public static Configuration config;
 	
 	@EventHandler
-	public void preInit(FMLPreInitializationEvent event)
-	{
+	public void preInit(FMLPreInitializationEvent event) {
 		ExplosionSrcManager.preInit(event);
 		
-		configFile = new File(event.getModConfigurationDirectory(), "AvoidExplodingCreepers/Explosion Sources.cfg");
+		configFile = new File(ExplosionSrcManager.configFolder, "Explosion Sources.cfg");
 		try {
 			configFile.createNewFile();
 		} catch (IOException e) {
@@ -55,20 +54,18 @@ public class AvoidExplodingCreepersBase {
 	}
 
 	@EventHandler
-	public void init(FMLInitializationEvent event)
-	{
+	public void init(FMLInitializationEvent event) {
 		ExplosionSrcManager.init(event);
 	}
 
 	@EventHandler
-	public void postInit(FMLPostInitializationEvent event)
-	{
+	public void postInit(FMLPostInitializationEvent event) {
 		ExplosionSrcManager.postInit(event);
 	}
 	
 	@EventHandler
-	public void serverStopped(FMLServerStoppingEvent event){
-		ExplosionSrcManager.serverStopped(event);
+	public void serverStopping(FMLServerStoppingEvent event) {
+		ExplosionSrcManager.serverStopping(event);
 	}
 	
 }

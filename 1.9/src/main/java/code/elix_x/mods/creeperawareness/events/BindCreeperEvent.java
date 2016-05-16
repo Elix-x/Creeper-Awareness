@@ -14,8 +14,8 @@ public class BindCreeperEvent {
 
 	@SubscribeEvent
 	public void bind(GetExplosionSourceFromEntityEvent event){
-		if(event.entity instanceof EntityCreeper && ((EntityCreeper) event.entity).getCreeperState() == 1 && event.explosionSource == null){
-			final EntityCreeper creeper = (EntityCreeper) event.entity;
+		if(event.getEntity() instanceof EntityCreeper && ((EntityCreeper) event.getEntity()).getCreeperState() == 1 && event.explosionSource == null){
+			final EntityCreeper creeper = (EntityCreeper) event.getEntity();
 			event.explosionSource = new IExplosionSource(){
 
 				private boolean dirty = true;

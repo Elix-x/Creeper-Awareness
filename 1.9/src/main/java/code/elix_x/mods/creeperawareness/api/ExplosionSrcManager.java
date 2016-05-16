@@ -30,7 +30,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -66,7 +65,7 @@ public class ExplosionSrcManager {
 	}
 
 	public static void init(FMLInitializationEvent event){
-		FMLCommonHandler.instance().bus().register(new TickEvent());
+		MinecraftForge.EVENT_BUS.register(new TickEvent());
 	}
 
 	public static void postInit(FMLPostInitializationEvent event){
@@ -127,8 +126,9 @@ public class ExplosionSrcManager {
 	}
 
 	private static void tick(World world){
-		for(Object o : world.loadedEntityList){
-			Entity entity = (Entity) o;
+		Iterator<Entity> it = world.loadedEntityList.iterator();
+		while(it.hasNext()){
+			Entity entity = it.next();
 			IExplosionSource source = entitySourceMap.get(entity);
 			if(source != null){
 				processSource(source);
@@ -185,7 +185,7 @@ public class ExplosionSrcManager {
 				double x = ePos.xCoord + out.xCoord;
 				double y = ePos.yCoord + out.yCoord;
 				double z = ePos.zCoord + out.zCoord;
-				for(int i = 0; source.getWorldObj().getBlockState(new BlockPos(x, y, z)).getBlock() != Blocks.air; i = i == 0 ? 1 : i > 0 ? -i : -i + 1){
+				for(int i = 0; source.getWorldObj().getBlockState(new BlockPos(x, y, z)).getBlock() != Blocks.AIR; i = i == 0 ? 1 : i > 0 ? -i : -i + 1){
 					y = ePos.yCoord + out.yCoord + i;
 					if(i < 0 || i > 255){
 						y = source.getWorldObj().getHeight(new BlockPos(x, y, z)).getY();

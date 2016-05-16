@@ -13,8 +13,8 @@ public class BindTntEvent {
 
 	@SubscribeEvent
 	public void bind(GetExplosionSourceFromEntityEvent event){
-		if(event.entity instanceof EntityTNTPrimed && event.explosionSource == null){
-			final EntityTNTPrimed tnt = (EntityTNTPrimed) event.entity;
+		if(event.getEntity() instanceof EntityTNTPrimed && event.explosionSource == null){
+			final EntityTNTPrimed tnt = (EntityTNTPrimed) event.getEntity();
 			event.explosionSource = new IExplosionSource(){
 
 				private boolean dirty = true;

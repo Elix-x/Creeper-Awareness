@@ -127,8 +127,9 @@ public class ExplosionSrcManager {
 	}
 
 	private static void tick(World world){
-		for(Object o : world.loadedEntityList){
-			Entity entity = (Entity) o;
+		Iterator<Entity> it = world.loadedEntityList.iterator();
+		while(it.hasNext()){
+			Entity entity = it.next();
 			IExplosionSource source = entitySourceMap.get(entity);
 			if(source != null){
 				processSource(source);

@@ -1,0 +1,16 @@
+[
+{
+  "modid": "creeperawareness",
+  "name": "Creeper Awareness",
+  "description": "",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Elix_x"],
+  "credits": "Elix_x",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

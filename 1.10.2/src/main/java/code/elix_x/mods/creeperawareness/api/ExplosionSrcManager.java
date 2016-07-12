@@ -53,9 +53,9 @@ public class ExplosionSrcManager {
 		configFolder = new File(event.getModConfigurationDirectory(), "Avoid Exploding Creepers");
 		configFolder.mkdir();
 		configFile = new File(configFolder, "API.cfg");
-		try {
+		try{
 			configFile.createNewFile();
-		} catch (IOException e){
+		} catch(IOException e){
 			logger.error("Caught exception while creating config file: ", e);
 		}
 		config = new Configuration(configFile);
@@ -126,13 +126,12 @@ public class ExplosionSrcManager {
 	}
 
 	private static void tick(World world){
-		Iterator<Entity> it = world.loadedEntityList.iterator();
-		while(it.hasNext()){
-			Entity entity = it.next();
+		for(int i = 0; i < world.loadedEntityList.size(); i++){
+			Entity entity = world.loadedEntityList.get(i);
 			IExplosionSource source = entitySourceMap.get(entity);
 			if(source != null){
 				processSource(source);
-			} else { 
+			} else{
 				if(entity instanceof IExplosionSource){
 					source = (IExplosionSource) entity;
 				}
@@ -193,7 +192,7 @@ public class ExplosionSrcManager {
 					}
 				}
 				vec3 = new Vec3d(x, y, z);
-			} else {
+			} else{
 				shape = shape.getBounds();
 				vec3 = RandomPositionGenerator.findRandomTargetBlockAwayFrom(entity, source.getExplosionRadius(), source.getExplosionRadius(), sourcePos);
 			}
@@ -203,7 +202,7 @@ public class ExplosionSrcManager {
 			PathNavigate navigator = entity.getNavigator();
 			navigator.clearPathEntity();
 			navigator.tryMoveToXYZ(vec3.xCoord, vec3.yCoord, vec3.zCoord, speed);
-		} else {
+		} else{
 			MinecraftForge.EVENT_BUS.post(new RerouteUnformalEntityEvent(source, e));
 		}
 	}

@@ -8,12 +8,12 @@ import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
 
 /**
- * This event is allows you to reroute manually entities that aren't {@link EntityCreature} from given {@link IExplosionSource}.
+ * This event is allows you to reroute manually entities that aren't
+ * {@link EntityCreature} from given {@link IExplosionSource}. <br>
  * <br>
- * <br>
- * This event is fired on {@link MinecraftForge.EVENT_BUS}.
- * <br>
+ * This event is fired on {@link MinecraftForge.EVENT_BUS}. <br>
  * This event is not {@link Cancelable}.
+ * 
  * @author elix_x
  *
  */
@@ -25,6 +25,5 @@ public class RerouteUnformalEntityEvent extends EntityEvent {
 		super(entity);
 		this.source = source;
 	}
-
 
 }

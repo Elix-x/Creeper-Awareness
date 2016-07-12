@@ -19,12 +19,12 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 
-@Mod(modid = CreeperAwarenessBase.MODID, name = CreeperAwarenessBase.NAME, version = CreeperAwarenessBase.VERSION, dependencies = "required-after:" + EXCore.DEPENDENCY, acceptedMinecraftVersions = EXCore.MCVERSION, acceptableRemoteVersions = "*")
+@Mod(modid = CreeperAwarenessBase.MODID, name = CreeperAwarenessBase.NAME, version = CreeperAwarenessBase.VERSION, dependencies = "required-after:" + EXCore.DEPENDENCY, acceptedMinecraftVersions = EXCore.MCVERSIONDEPENDENCY, acceptableRemoteVersions = "*")
 public class CreeperAwarenessBase {
 
 	public static final String MODID = "creeperawareness";
 	public static final String NAME = "Creeper Awareness";
-	public static final String VERSION = "2.0.1";
+	public static final String VERSION = "2.0.2";
 
 	public static final Logger logger = LogManager.getLogger(NAME);
 
@@ -36,9 +36,9 @@ public class CreeperAwarenessBase {
 		ExplosionSrcManager.preInit(event);
 
 		configFile = new File(ExplosionSrcManager.configFolder, "Explosion Sources.cfg");
-		try {
+		try{
 			configFile.createNewFile();
-		} catch (IOException e){
+		} catch(IOException e){
 			logger.error("Caught exception while creating config file: ", e);
 		}
 		config = new Configuration(configFile);

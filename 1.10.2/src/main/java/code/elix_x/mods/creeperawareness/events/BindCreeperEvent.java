@@ -52,7 +52,8 @@ public class BindCreeperEvent {
 
 				@Override
 				public boolean update(){
-					if(creeper.posX != creeper.prevPosX || creeper.posY != creeper.prevPosY || creeper.posZ != creeper.prevPosZ) setDirty(true);
+					if(creeper.posX != creeper.prevPosX || creeper.posY != creeper.prevPosY || creeper.posZ != creeper.prevPosZ)
+						setDirty(true);
 					return true;
 				}
 

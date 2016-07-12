@@ -7,13 +7,13 @@ import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
 
 /**
- * Event that allows you to bind {@link IExplosionSource} to {@link Entity} that does not implement {@link IExplosionSource}.
- * <br>
- * Simply change {@link #explosionSource} to one that you want to be bound to that entity.
- * <br>
- * This event is fired on {@link MinecraftForge#EVENT_BUS}.
- * <br>
+ * Event that allows you to bind {@link IExplosionSource} to {@link Entity} that
+ * does not implement {@link IExplosionSource}. <br>
+ * Simply change {@link #explosionSource} to one that you want to be bound to
+ * that entity. <br>
+ * This event is fired on {@link MinecraftForge#EVENT_BUS}. <br>
  * This event is not {@link Cancelable}.
+ * 
  * @author elix_x
  *
  */

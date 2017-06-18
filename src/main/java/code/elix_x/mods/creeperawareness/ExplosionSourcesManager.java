@@ -9,14 +9,15 @@ import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
+import java.lang.ref.WeakReference;
 import java.util.*;
 
 public class ExplosionSourcesManager implements IExplosionSourcesManager {
 
 	private World world;
 	private Queue<IExplosionSource> newOrNotExplody = new LinkedList<>();
-	private Multimap<IExplosionSource, Entity> sources = HashMultimap.create();
-	private Multimap<Entity, IExplosionSource> entity2sources = HashMultimap.create();
+	private Multimap<IExplosionSource, WeakReference<Entity>> sources = HashMultimap.create();
+	private Multimap<WeakReference<Entity>, IExplosionSource> entity2sources = HashMultimap.create();
 
 	@Override
 	public void addExplosionSource(IExplosionSource source){
@@ -41,13 +42,15 @@ public class ExplosionSourcesManager implements IExplosionSourcesManager {
 			else {
 				if(source.hasChanged()) sources.removeAll(source);
 				process(source);
+				sources.get(source).removeIf(reference -> reference.get() == null);
 			}
 		}
 		for(IExplosionSource remove : forRemoval){
 			newOrNotExplody.add(remove);
 			sources.removeAll(remove);
 		}
-		entity2sources.keySet().forEach(entity -> MinecraftForge.EVENT_BUS.post(new PathfindEntityEvent(entity, entity2sources.get(entity).stream().filter(source -> source.isValid() && source.isExploding()))));
+		entity2sources.keySet().removeIf(reference -> reference.get() == null);
+		entity2sources.keySet().forEach(entity -> MinecraftForge.EVENT_BUS.post(new PathfindEntityEvent(entity.get(), entity2sources.get(entity).stream().filter(source -> source.isValid() && source.isExploding()))));
 	}
 
 	private void process(IExplosionSource source){
@@ -55,8 +58,8 @@ public class ExplosionSourcesManager implements IExplosionSourcesManager {
 	}
 
 	private void processEntity(IExplosionSource source, Entity entity){
-		sources.put(source, entity);
-		entity2sources.put(entity, source);
+		sources.put(source, new WeakReference<>(entity));
+		entity2sources.put(new WeakReference<>(entity), source);
 	}
 
 }

@@ -37,11 +37,11 @@ public class CreeperAwarenessBase {
 
 	public static final Logger logger = LogManager.getLogger(NAME);
 
+	@CapabilityInject(IExplosionSourcesManager.class)
+	public static Capability<ExplosionSourcesManager> managerCapability;
+
 	public Configuration apiConfig;
 	private Configuration coreConfig;
-
-	@CapabilityInject(IExplosionSourcesManager.class)
-	private Capability<ExplosionSourcesManager> managerCapability;
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event){

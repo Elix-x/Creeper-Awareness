@@ -24,7 +24,7 @@ public class CreeperAwarenessBase {
 
 	public static final String MODID = "creeperawareness";
 	public static final String NAME = "Creeper Awareness";
-	public static final String VERSION = "2.0.2";
+	public static final String VERSION = "@VERSION@";
 
 	public static final Logger logger = LogManager.getLogger(NAME);
 

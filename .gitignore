@@ -1,1 +1,19 @@
-﻿/outdated
+﻿# GRADLE
+.gradle
+build/
+bin/
+
+# Forge
+/run/
+*.launch
+
+# ECLIPSE
+.project
+.classpath
+.settings/
+eclipse/*
+
+# IDEA
+.idea/
+out/
+*.iml

@@ -1,12 +1,8 @@
 package code.elix_x.mods.creeperawareness.api;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import code.elix_x.excore.utils.shape3d.Shape3D;
-import code.elix_x.mods.creeperawareness.ExplosionSrcManager;
+import code.elix_x.mods.creeperawareness.ExplosionSourcesManager;
 import net.minecraft.entity.Entity;
-import net.minecraft.world.World;
 
 /**
  * Implement this interface on {@link Entity} to make it valid explosion source.
@@ -18,16 +14,13 @@ import net.minecraft.world.World;
  * {@link GetExplosionSourceFromEntityEvent#explosionSource} to explosion source
  * you want it to be. <br>
  * If you want to create explosion source in world, which is not an entity, call
- * {@link ExplosionSrcManager#addExplosionSource(IExplosionSource)} with
+ * {@link ExplosionSourcesManager#addExplosionSource(IExplosionSource)} with
  * explosion source to add to the world.
  * 
  * @author elix_x
  *
  */
 public interface IExplosionSource {
-
-	@Nonnull
-	public World getWorldObj();
 
 	public boolean isExploding();
 

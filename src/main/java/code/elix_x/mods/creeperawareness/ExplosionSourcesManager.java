@@ -41,60 +41,27 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 
-public class ExplosionSrcManager implements IExplosionSourcesManager {
+public class ExplosionSourcesManager implements IExplosionSourcesManager {
 
 	public static final Logger logger = LogManager.getLogger("Creeper Awareness Explosions Mananger");
 
-	public File configFolder;
-	public File configFile;
-	public Configuration config;
+	private World world;
 
-	public boolean smartMobs = true;
-
-	public void preInit(FMLPreInitializationEvent event){
-		configFolder = new File(event.getModConfigurationDirectory(), CreeperAwarenessBase.NAME);
-		configFolder.mkdir();
-		configFile = new File(configFolder, "API.cfg");
-		try{
-			configFile.createNewFile();
-		} catch(IOException e){
-			logger.error("Caught exception while creating config file: ", e);
-		}
-		config = new Configuration(configFile);
-		config.load();
-		smartMobs = config.getBoolean("smartMobs", "Mobs", true, "Mobs know vector math and calculate exact runaway position using it.\nIf false, mobs don't know vector math and run to random block away...");
-		config.save();
+	public ExplosionSourcesManager(){
 	}
 
-	public void init(FMLInitializationEvent event){
-		MinecraftForge.EVENT_BUS.register(this)
-	}
-
-	public void postInit(FMLPostInitializationEvent event){
+	@Override
+	public void addExplosionSource(IExplosionSource source){
 
 	}
 
-	public void serverStopping(FMLServerStoppingEvent event){
-		entitySourceMap.clear();
-		specialSources.clear();
-		sourceEntitiesMap.clear();
+	void tick(World wworld){
+		if(world == null) world = wworld;
+		assert wworld == world : "Cannot tick this explosion sources manager on a different world.";
+
 	}
 
-	@SubscribeEvent
-	public void onTickWorld(WorldTickEvent event){
-		if(!event.world.isRemote && event.phase == Phase.START){
-			tick(event.world);
-		}
-	}
-
-	@SubscribeEvent
-	public void onTickServer(ServerTickEvent event){
-		if(event.phase == Phase.START){
-			tick();
-		}
-	}
-
-	private static Map<Entity, IExplosionSource> entitySourceMap = new HashMap<Entity, IExplosionSource>();
+	/*private static Map<Entity, IExplosionSource> entitySourceMap = new HashMap<Entity, IExplosionSource>();
 	private static List<IExplosionSource> specialSources = new ArrayList<IExplosionSource>();
 
 	public void addExplosionSource(IExplosionSource source){
@@ -199,5 +166,5 @@ public class ExplosionSrcManager implements IExplosionSourcesManager {
 		} else{
 			MinecraftForge.EVENT_BUS.post(new RerouteUnformalEntityEvent(source, e));
 		}
-	}
+	}*/
 }

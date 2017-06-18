@@ -3,7 +3,6 @@ package code.elix_x.mods.creeperawareness.events;
 import code.elix_x.excore.utils.shape3d.Shape3D;
 import code.elix_x.excore.utils.shape3d.Sphere;
 import code.elix_x.mods.creeperawareness.api.IExplosionSource;
-import code.elix_x.mods.creeperawareness.api.events.GetExplosionSourceFromEntityEvent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.world.World;

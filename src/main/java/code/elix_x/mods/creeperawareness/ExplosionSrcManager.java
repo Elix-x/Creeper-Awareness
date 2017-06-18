@@ -17,7 +17,6 @@ import com.google.common.collect.Multimap;
 
 import code.elix_x.excore.utils.shape3d.AxisAlignedBox;
 import code.elix_x.excore.utils.shape3d.Shape3D;
-import code.elix_x.mods.creeperawareness.api.events.GetExplosionSourceFromEntityEvent;
 import code.elix_x.mods.creeperawareness.api.events.RerouteUnformalEntityEvent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCreature;
@@ -136,9 +135,6 @@ public class ExplosionSrcManager {
 				if(entity instanceof IExplosionSource){
 					source = (IExplosionSource) entity;
 				}
-				GetExplosionSourceFromEntityEvent event = new GetExplosionSourceFromEntityEvent(entity, source);
-				MinecraftForge.EVENT_BUS.post(event);
-				source = event.explosionSource;
 
 				if(source != null){
 					entitySourceMap.put(entity, source);

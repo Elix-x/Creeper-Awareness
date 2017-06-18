@@ -5,11 +5,15 @@ import code.elix_x.mods.creeperawareness.api.IExplosionSourcesManager;
 import code.elix_x.mods.creeperawareness.events.BindCreeperEvent;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -19,7 +23,9 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.lwjgl.Sys;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
@@ -100,7 +106,26 @@ public class CreeperAwarenessBase {
 	}
 
 	@SubscribeEvent
-	public void tick(TickEvent.WorldTickEvent event){
+	public static void attach(AttachCapabilitiesEvent<World> event){
+		if(!event.getObject().isRemote) event.addCapability(new ResourceLocation(MODID, "explosion_sources_manager"), new ICapabilityProvider(){
+
+			private final IExplosionSourcesManager manager = new ExplosionSourcesManager();
+
+			@Override
+			public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing){
+				return capability == managerCapability;
+			}
+
+			@Nullable
+			@Override
+			public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing){
+				return capability == managerCapability ? (T) manager : null;
+			}
+		});
+	}
+
+	@SubscribeEvent
+	public static void tick(TickEvent.WorldTickEvent event){
 		if(event.phase == TickEvent.Phase.START && !event.world.isRemote) event.world.getCapability(managerCapability, null).tick(event.world);
 	}
 

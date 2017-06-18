@@ -3,7 +3,6 @@ package code.elix_x.mods.creeperawareness;
 import code.elix_x.excore.EXCore;
 import code.elix_x.mods.creeperawareness.api.IExplosionSourcesManager;
 import code.elix_x.mods.creeperawareness.events.BindCreeperEvent;
-import code.elix_x.mods.creeperawareness.events.BindTntEvent;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.MinecraftForge;
@@ -11,13 +10,11 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.apache.logging.log4j.LogManager;
@@ -71,9 +68,9 @@ public class CreeperAwarenessBase {
 		if(coreConfig.getBoolean("creeper", "Vanilla", true, "Should creepers be valid explosion sources?")){
 			MinecraftForge.EVENT_BUS.register(new BindCreeperEvent());
 		}
-		if(coreConfig.getBoolean("tnt", "Vanilla", true, "Should tnts be valid explosion sources?")){
+		/*if(coreConfig.getBoolean("tnt", "Vanilla", true, "Should tnts be valid explosion sources?")){
 			MinecraftForge.EVENT_BUS.register(new BindTntEvent());
-		}
+		}*/
 		coreConfig.save();
 
 		CapabilityManager.INSTANCE.register(IExplosionSourcesManager.class, new Capability.IStorage<IExplosionSourcesManager>() {

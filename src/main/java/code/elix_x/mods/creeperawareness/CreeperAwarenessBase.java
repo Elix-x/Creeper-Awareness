@@ -1,12 +1,8 @@
 package code.elix_x.mods.creeperawareness;
 
-import java.io.File;
-import java.io.IOException;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import code.elix_x.excomms.reflection.ReflectionHelper;
 import code.elix_x.excore.EXCore;
+import code.elix_x.mods.creeperawareness.api.IExplosionSourcesManager;
 import code.elix_x.mods.creeperawareness.events.BindCreeperEvent;
 import code.elix_x.mods.creeperawareness.events.BindTntEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -17,6 +13,11 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.io.File;
+import java.io.IOException;
 
 @Mod(modid = CreeperAwarenessBase.MODID, name = CreeperAwarenessBase.NAME, version = CreeperAwarenessBase.VERSION, dependencies = "required-after:" + EXCore.DEPENDENCY, acceptedMinecraftVersions = EXCore.MCVERSIONDEPENDENCY, acceptableRemoteVersions = "*")
 public class CreeperAwarenessBase {
@@ -27,14 +28,19 @@ public class CreeperAwarenessBase {
 
 	public static final Logger logger = LogManager.getLogger(NAME);
 
-	public static File configFile;
-	public static Configuration config;
+	private File configFile;
+	private Configuration config;
+
+	private ExplosionSrcManager explosionSrcManager;
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event){
-		ExplosionSrcManager.preInit(event);
+		explosionSrcManager = new ExplosionSrcManager();
+		new ReflectionHelper.AClass<>(IExplosionSourcesManager.class).<IExplosionSourcesManager>getDeclaredField("INSTANCE").setFinal(false).set(null, explosionSrcManager);
 
-		configFile = new File(ExplosionSrcManager.configFolder, "Explosion Sources.cfg");
+		explosionSrcManager.preInit(event);
+
+		configFile = new File(explosionSrcManager.configFolder, "Explosion Sources.cfg");
 		try{
 			configFile.createNewFile();
 		} catch(IOException e){
@@ -54,17 +60,17 @@ public class CreeperAwarenessBase {
 
 	@EventHandler
 	public void init(FMLInitializationEvent event){
-		ExplosionSrcManager.init(event);
+		explosionSrcManager.init(event);
 	}
 
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event){
-		ExplosionSrcManager.postInit(event);
+		explosionSrcManager.postInit(event);
 	}
 
 	@EventHandler
 	public void serverStopping(FMLServerStoppingEvent event){
-		ExplosionSrcManager.serverStopping(event);
+		explosionSrcManager.serverStopping(event);
 	}
 
 }

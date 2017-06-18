@@ -26,15 +26,6 @@ import net.minecraft.world.World;
  */
 public interface IExplosionSource {
 
-	/**
-	 * {@link Entity} that this explosion source handles.<br>
-	 * <b>Can</b> be null.
-	 * 
-	 * @return
-	 */
-	@Nullable
-	public Entity getHandledEntity();
-
 	@Nonnull
 	public World getWorldObj();
 

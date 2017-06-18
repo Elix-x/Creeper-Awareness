@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 
 import code.elix_x.mods.creeperawareness.api.IExplosionSource;
+import code.elix_x.mods.creeperawareness.api.IExplosionSourcesManager;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -39,18 +41,18 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 
-public class ExplosionSrcManager {
+public class ExplosionSrcManager implements IExplosionSourcesManager {
 
 	public static final Logger logger = LogManager.getLogger("Creeper Awareness Explosions Mananger");
 
-	public static File configFolder;
-	public static File configFile;
-	public static Configuration config;
+	public File configFolder;
+	public File configFile;
+	public Configuration config;
 
-	public static boolean smartMobs = true;
+	public boolean smartMobs = true;
 
-	public static void preInit(FMLPreInitializationEvent event){
-		configFolder = new File(event.getModConfigurationDirectory(), "Avoid Exploding Creepers");
+	public void preInit(FMLPreInitializationEvent event){
+		configFolder = new File(event.getModConfigurationDirectory(), CreeperAwarenessBase.NAME);
 		configFolder.mkdir();
 		configFile = new File(configFolder, "API.cfg");
 		try{
@@ -64,46 +66,42 @@ public class ExplosionSrcManager {
 		config.save();
 	}
 
-	public static void init(FMLInitializationEvent event){
-		MinecraftForge.EVENT_BUS.register(new TickEvent());
+	public void init(FMLInitializationEvent event){
+		MinecraftForge.EVENT_BUS.register(this)
 	}
 
-	public static void postInit(FMLPostInitializationEvent event){
+	public void postInit(FMLPostInitializationEvent event){
 
 	}
 
-	public static void serverStopping(FMLServerStoppingEvent event){
+	public void serverStopping(FMLServerStoppingEvent event){
 		entitySourceMap.clear();
 		specialSources.clear();
 		sourceEntitiesMap.clear();
 	}
 
-	public static class TickEvent {
-
-		@SubscribeEvent
-		public void onTickWorld(WorldTickEvent event){
-			if(!event.world.isRemote && event.phase == Phase.START){
-				tick(event.world);
-			}
+	@SubscribeEvent
+	public void onTickWorld(WorldTickEvent event){
+		if(!event.world.isRemote && event.phase == Phase.START){
+			tick(event.world);
 		}
+	}
 
-		@SubscribeEvent
-		public void onTickServer(ServerTickEvent event){
-			if(event.phase == Phase.START){
-				tick();
-			}
+	@SubscribeEvent
+	public void onTickServer(ServerTickEvent event){
+		if(event.phase == Phase.START){
+			tick();
 		}
-
 	}
 
 	private static Map<Entity, IExplosionSource> entitySourceMap = new HashMap<Entity, IExplosionSource>();
 	private static List<IExplosionSource> specialSources = new ArrayList<IExplosionSource>();
 
-	public static void addExplosionSource(IExplosionSource source){
+	public void addExplosionSource(IExplosionSource source){
 		if(!entitySourceMap.containsValue(source)) specialSources.add(source);
 	}
 
-	private static void tick(){
+	private void tick(){
 		Iterator<IExplosionSource> it = entitySourceMap.values().iterator();
 		while(it.hasNext()){
 			IExplosionSource source = it.next();
@@ -125,7 +123,7 @@ public class ExplosionSrcManager {
 		}
 	}
 
-	private static void tick(World world){
+	private void tick(World world){
 		for(int i = 0; i < world.loadedEntityList.size(); i++){
 			Entity entity = world.loadedEntityList.get(i);
 			IExplosionSource source = entitySourceMap.get(entity);
@@ -144,9 +142,9 @@ public class ExplosionSrcManager {
 		}
 	}
 
-	private static Multimap<IExplosionSource, Entity> sourceEntitiesMap = HashMultimap.create();
+	private Multimap<IExplosionSource, Entity> sourceEntitiesMap = HashMultimap.create();
 
-	private static void processSource(IExplosionSource source){
+	private void processSource(IExplosionSource source){
 		if(source.isValid()){
 			if(source.update()){
 				if(source.isExploding()){
@@ -162,8 +160,7 @@ public class ExplosionSrcManager {
 		}
 	}
 
-	private static void processEntity(IExplosionSource source, Entity e){
-		if(e == source.getHandledEntity()) return;
+	private void processEntity(IExplosionSource source, Entity e){
 		if(e instanceof EntityPlayer) return;
 		if(e instanceof EntityCreature){
 			EntityCreature entity = (EntityCreature) e;

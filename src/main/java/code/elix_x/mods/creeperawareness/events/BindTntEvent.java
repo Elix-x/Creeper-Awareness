@@ -26,7 +26,7 @@ public class BindTntEvent {
 
 				@Override
 				public World getWorldObj(){
-					return tnt.worldObj;
+					return tnt.world;
 				}
 
 				@Override

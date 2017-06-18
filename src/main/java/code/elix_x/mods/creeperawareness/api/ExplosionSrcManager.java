@@ -178,14 +178,14 @@ public class ExplosionSrcManager {
 				Vec3d vec = ePos.subtract(sourcePos).normalize();
 				Vec3d out = new Vec3d(0, 0, 0);
 				AxisAlignedBB box = entity.getEntityBoundingBox();
-				while(box != null ? shape.intersectsWith(source.getWorldObj(), new AxisAlignedBox(box.offset(out.xCoord, out.yCoord, out.zCoord))) : shape.isInside(source.getWorldObj(), ePos.addVector(out.xCoord, out.yCoord, out.zCoord))){
-					out = out.addVector(vec.xCoord, vec.yCoord, vec.zCoord);
+				while(box != null ? shape.intersectsWith(source.getWorldObj(), new AxisAlignedBox(box.offset(out.x, out.y, out.z))) : shape.isInside(source.getWorldObj(), ePos.addVector(out.x, out.y, out.z))){
+					out = out.addVector(vec.x, vec.y, vec.z);
 				}
-				double x = ePos.xCoord + out.xCoord;
-				double y = ePos.yCoord + out.yCoord;
-				double z = ePos.zCoord + out.zCoord;
+				double x = ePos.x + out.x;
+				double y = ePos.y + out.y;
+				double z = ePos.z + out.z;
 				for(int i = 0; source.getWorldObj().getBlockState(new BlockPos(x, y, z)).getBlock() != Blocks.AIR; i = i == 0 ? 1 : i > 0 ? -i : -i + 1){
-					y = ePos.yCoord + out.yCoord + i;
+					y = ePos.y + out.y + i;
 					if(i < 0 || i > 255){
 						y = source.getWorldObj().getHeight(new BlockPos(x, y, z)).getY();
 						break;
@@ -196,12 +196,12 @@ public class ExplosionSrcManager {
 				shape = shape.getBounds();
 				vec3 = RandomPositionGenerator.findRandomTargetBlockAwayFrom(entity, source.getExplosionRadius(), source.getExplosionRadius(), sourcePos);
 			}
-			double eb = entity.getDistanceSq(vec3.xCoord, vec3.yCoord, vec3.zCoord);
+			double eb = entity.getDistanceSq(vec3.x, vec3.y, vec3.z);
 			double speed = eb / (source.getTimeBeforeExplosion() / 2.5);
 
 			PathNavigate navigator = entity.getNavigator();
 			navigator.clearPathEntity();
-			navigator.tryMoveToXYZ(vec3.xCoord, vec3.yCoord, vec3.zCoord, speed);
+			navigator.tryMoveToXYZ(vec3.x, vec3.y, vec3.z, speed);
 		} else{
 			MinecraftForge.EVENT_BUS.post(new RerouteUnformalEntityEvent(source, e));
 		}

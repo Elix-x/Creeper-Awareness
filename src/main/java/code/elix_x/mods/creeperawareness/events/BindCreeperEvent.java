@@ -27,7 +27,7 @@ public class BindCreeperEvent {
 
 				@Override
 				public World getWorldObj(){
-					return creeper.worldObj;
+					return creeper.world;
 				}
 
 				@Override

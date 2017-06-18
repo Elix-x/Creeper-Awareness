@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import code.elix_x.excore.utils.shape3d.Shape3D;
+import code.elix_x.mods.creeperawareness.ExplosionSrcManager;
 import code.elix_x.mods.creeperawareness.api.events.GetExplosionSourceFromEntityEvent;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;

@@ -7,7 +7,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import code.elix_x.excore.EXCore;
-import code.elix_x.mods.creeperawareness.api.ExplosionSrcManager;
 import code.elix_x.mods.creeperawareness.events.BindCreeperEvent;
 import code.elix_x.mods.creeperawareness.events.BindTntEvent;
 import net.minecraftforge.common.MinecraftForge;

@@ -32,7 +32,7 @@ import java.io.File;
 import java.io.IOException;
 
 @Mod.EventBusSubscriber
-@Mod(modid = CreeperAwarenessBase.MODID, name = CreeperAwarenessBase.NAME, version = CreeperAwarenessBase.VERSION, dependencies = "required-after:" + EXCore.DEPENDENCY, acceptedMinecraftVersions = EXCore.MCVERSIONDEPENDENCY, acceptableRemoteVersions = "*")
+@Mod(modid = CreeperAwarenessBase.MODID, name = CreeperAwarenessBase.NAME, version = CreeperAwarenessBase.VERSION, dependencies = "required-after:" + EXCore.DEPENDENCY, acceptedMinecraftVersions = "[1.11.2,)", acceptableRemoteVersions = "*")
 public class CreeperAwarenessBase {
 
 	public static final String MODID = "creeperawareness";

@@ -1,6 +1,5 @@
 package code.elix_x.mods.creeperawareness;
 
-import code.elix_x.excore.EXCore;
 import code.elix_x.mods.creeperawareness.api.IExplosionSourcesManager;
 import code.elix_x.mods.creeperawareness.events.BindCreeperEvent;
 import code.elix_x.mods.creeperawareness.events.BindTntEvent;
@@ -31,7 +30,7 @@ import java.io.File;
 import java.io.IOException;
 
 @Mod.EventBusSubscriber
-@Mod(modid = CreeperAwarenessBase.MODID, name = CreeperAwarenessBase.NAME, version = CreeperAwarenessBase.VERSION, dependencies = "required-after:" + EXCore.DEPENDENCY, acceptedMinecraftVersions = "[1.11.2,)", acceptableRemoteVersions = "*")
+@Mod(modid = CreeperAwarenessBase.MODID, name = CreeperAwarenessBase.NAME, version = CreeperAwarenessBase.VERSION, acceptedMinecraftVersions = "[1.11.2,)", acceptableRemoteVersions = "*")
 public class CreeperAwarenessBase {
 
 	public static final String MODID = "creeperawareness";

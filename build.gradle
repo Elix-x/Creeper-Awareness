@@ -37,6 +37,20 @@ version += "-$minecraft_version"
 group = group
 jar {
 	classifier = "obf"
+	from {
+		zipTree((configurations.runtime - configurations.provided).find{ it.getName().startsWith("EXCore")})
+    } {
+		include "code/elix_x/excore/utils/shape3d/**"
+		include "code/elix_x/excore/utils/pos/**"
+		include "code/elix_x/excore/utils/vecs/**"
+    }
+	from {
+        zipTree((configurations.runtime - configurations.provided).find{ it.getName().startsWith("EXComms")})
+    } {
+        exclude "META-INF/*.SF"
+        exclude "META-INF/*.DSA"
+        exclude "META-INF/*.RSA"
+    }
 }
 
 /*

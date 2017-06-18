@@ -37,8 +37,6 @@ public class CreeperAwarenessBase {
 
 	public static final Logger logger = LogManager.getLogger(NAME);
 
-	public File configFolder;
-	public File configFile;
 	public Configuration apiConfig;
 	private Configuration coreConfig;
 

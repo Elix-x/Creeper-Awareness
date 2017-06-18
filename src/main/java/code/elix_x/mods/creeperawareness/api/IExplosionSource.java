@@ -17,35 +17,37 @@ import net.minecraft.entity.Entity;
  * {@link ExplosionSourcesManager#addExplosionSource(IExplosionSource)} with
  * explosion source to add to the world.
  * 
- * @author elix_x
+ * @author Elix_x
  *
  */
 public interface IExplosionSource {
 
-	public boolean isExploding();
+	boolean isExploding();
 
-	public int getTimeBeforeExplosion();
+	int getTimeBeforeExplosion();
 
-	public Shape3D getExplosionShape();
+	Shape3D getExplosionShape();
 
-	public int getExplosionRadius();
+	@Deprecated //Remove in future release
+	int getExplosionRadius();
 
-	public boolean update();
+	boolean affectsEntity(Entity entity);
 
 	/**
-	 * If this source has changed since last update.
+	 * If this source has changed since last call.
 	 * 
 	 * @return whether or not all entities should be reprocessed.
 	 */
-	public boolean isDirty();
+	boolean hasChanged();
 
 	/**
-	 * Marks this source as being dirty / not dirty.
+	 * Marks this source as being dirty / not dirty.<br>
+	 * <br>
+	 * Called by explosion sources manager
 	 * 
-	 * @param dirty
-	 *            - new value
-	 */
-	public boolean setDirty(boolean dirty);
+	 * @param dirty - new value
+	 *
+	boolean setDirty(boolean dirty);*/
 
 	/**
 	 * Whether or not this source is still valid and should be updated. <br>
@@ -53,6 +55,6 @@ public interface IExplosionSource {
 	 * 
 	 * @return is this source valid and should be updated.
 	 */
-	public boolean isValid();
+	boolean isValid();
 
 }

@@ -30,7 +30,7 @@ public class DefaultEntitiesPathFinder {
 				Vec3d vec3;
 				Shape3D shape = source.getExplosionShape();
 				Vec3d sourcePos = shape.getPos();
-				if(true){
+				if(CreeperAwarenessBase.smartMobs){
 					Vec3d ePos = new Vec3d(entity.posX, entity.posY, entity.posZ);
 					Vec3d vec = ePos.subtract(sourcePos).normalize();
 					Vec3d out = new Vec3d(0, 0, 0);

@@ -47,6 +47,9 @@ public class CreeperAwarenessBase {
 	public Configuration apiConfig;
 	private Configuration coreConfig;
 
+	@Deprecated
+	public static boolean smartMobs = true;
+
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event){
 		File configFolder = new File(event.getModConfigurationDirectory(), CreeperAwarenessBase.NAME);
@@ -60,7 +63,7 @@ public class CreeperAwarenessBase {
 		}
 		apiConfig = new Configuration(apiConfigFile);
 		apiConfig.load();
-		//smartMobs = apiConfig.getBoolean("smartMobs", "Mobs", true, "Mobs know vector math and calculate exact runaway position using it.\nIf false, mobs don't know vector math and run to random block away...");
+		smartMobs = apiConfig.getBoolean("smartMobs", "Mobs", true, "Mobs know vector math and calculate exact runaway position using it.\nIf false, mobs don't know vector math and run to random block away...");
 		apiConfig.save();
 
 		File coreConfigFile = new File(configFolder, "Explosion Sources.cfg");

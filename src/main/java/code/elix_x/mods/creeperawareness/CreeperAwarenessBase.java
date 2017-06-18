@@ -3,6 +3,7 @@ package code.elix_x.mods.creeperawareness;
 import code.elix_x.excore.EXCore;
 import code.elix_x.mods.creeperawareness.api.IExplosionSourcesManager;
 import code.elix_x.mods.creeperawareness.events.BindCreeperEvent;
+import code.elix_x.mods.creeperawareness.events.BindTntEvent;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
@@ -71,12 +72,12 @@ public class CreeperAwarenessBase {
 		coreConfig = new Configuration(coreConfigFile);
 
 		coreConfig.load();
-		if(coreConfig.getBoolean("creeper", "Vanilla", true, "Should creepers be valid explosion sources?")){
+		if(coreConfig.getBoolean("creeper", "Minecraft", true, "Should creepers be explosion sources?")){
 			MinecraftForge.EVENT_BUS.register(new BindCreeperEvent());
 		}
-		/*if(coreConfig.getBoolean("tnt", "Vanilla", true, "Should tnts be valid explosion sources?")){
+		if(coreConfig.getBoolean("tnt", "Minecraft", true, "Should tnts be explosion sources?")){
 			MinecraftForge.EVENT_BUS.register(new BindTntEvent());
-		}*/
+		}
 		coreConfig.save();
 
 		CapabilityManager.INSTANCE.register(IExplosionSourcesManager.class, new Capability.IStorage<IExplosionSourcesManager>() {

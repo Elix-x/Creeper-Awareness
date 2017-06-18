@@ -2,31 +2,21 @@ package code.elix_x.mods.creeperawareness.events;
 
 import code.elix_x.excore.utils.shape3d.Shape3D;
 import code.elix_x.excore.utils.shape3d.Sphere;
+import code.elix_x.mods.creeperawareness.CreeperAwarenessBase;
 import code.elix_x.mods.creeperawareness.api.IExplosionSource;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityTNTPrimed;
 import net.minecraft.world.World;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class BindTntEvent {
 
 	@SubscribeEvent
-	public void bind(GetExplosionSourceFromEntityEvent event){
-		if(event.getEntity() instanceof EntityTNTPrimed && event.explosionSource == null){
+	public void bind(EntityJoinWorldEvent event){
+		if(!event.getWorld().isRemote && event.getEntity() instanceof EntityTNTPrimed){
 			final EntityTNTPrimed tnt = (EntityTNTPrimed) event.getEntity();
-			event.explosionSource = new IExplosionSource(){
-
-				private boolean dirty = true;
-
-				@Override
-				public Entity getHandledEntity(){
-					return tnt;
-				}
-
-				@Override
-				public World getWorldObj(){
-					return tnt.world;
-				}
+			event.getWorld().getCapability(CreeperAwarenessBase.managerCapability, null).addExplosionSource(new IExplosionSource(){
 
 				@Override
 				public boolean isExploding(){
@@ -49,19 +39,13 @@ public class BindTntEvent {
 				}
 
 				@Override
-				public boolean update(){
-					if(tnt.posX != tnt.prevPosX || tnt.posY != tnt.prevPosY || tnt.posZ != tnt.prevPosZ) setDirty(true);
-					return true;
+				public boolean affectsEntity(Entity entity){
+					return entity != tnt;
 				}
 
 				@Override
-				public boolean isDirty(){
-					return dirty;
-				}
-
-				@Override
-				public boolean setDirty(boolean dirty){
-					return this.dirty = dirty;
+				public boolean hasChanged(){
+					return tnt.posX != tnt.prevPosX || tnt.posY != tnt.prevPosY || tnt.posZ != tnt.prevPosZ;
 				}
 
 				@Override
@@ -69,7 +53,7 @@ public class BindTntEvent {
 					return tnt != null && !tnt.isDead;
 				}
 
-			};
+			});
 		}
 	}
 }

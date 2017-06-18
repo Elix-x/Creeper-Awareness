@@ -31,6 +31,12 @@ public interface IExplosionSource {
 	@Deprecated //Remove in future release
 	int getExplosionRadius();
 
+	/**
+	 * Checks whether this explosion source should affect the entity. The entity has already been tested to be inside {@linkplain #getExplosionShape()}.
+	 *
+	 * @param entity entity to check
+	 * @return whether the entity should be affected
+	 */
 	boolean affectsEntity(Entity entity);
 
 	/**

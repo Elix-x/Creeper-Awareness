@@ -6,7 +6,6 @@ import code.elix_x.mods.creeperawareness.CreeperAwarenessBase;
 import code.elix_x.mods.creeperawareness.api.IExplosionSource;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityTNTPrimed;
-import net.minecraft.world.World;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 

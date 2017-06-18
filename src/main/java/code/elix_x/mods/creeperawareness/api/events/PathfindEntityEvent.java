@@ -2,7 +2,6 @@ package code.elix_x.mods.creeperawareness.api.events;
 
 import code.elix_x.mods.creeperawareness.api.IExplosionSource;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityCreature;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
